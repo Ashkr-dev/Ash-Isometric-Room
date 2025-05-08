@@ -1,4 +1,3 @@
-import GUI from "lil-gui";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import coffeeSmokeMaterial from "./Components/coffeeSmoke";
@@ -9,17 +8,11 @@ import {renderer} from "./Utils/renderer";
 import {camera} from "./Utils/camera";
 import {controls} from "./Utils/controls";
 import {resize} from "./Utils/resize";
-
+import {gui} from "./Utils/gui";
 
 /**
  * Base
  */
-// Debug
-const gui = new GUI({
-  width: 400,
-});
-
-
 // Scene
 const scene = new THREE.Scene();
 
@@ -99,9 +92,11 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
   tvEmissionMesh.material = tvEmissionMaterial;
   studyLampBulbMesh.material = studylampBulbMaterial;
   laptopEmissionMesh.material = laptopEmissionMaterial;
-
+  
+  gltf.scene.position.set(0, -1, 0);
   scene.add(gltf.scene);
 });
+
 
 gui.addColor(tvEmissionMaterial, "color").name("Tv-BackLight");
 gui.addColor(studylampBulbMaterial, "color").name("Study-Lamp-Bulb");
