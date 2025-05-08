@@ -1,7 +1,7 @@
 // coffeeSmoke.js
 import * as THREE from "three";
-import coffeeSmokeVertexShader from "../shaders/coffeeSmoke/vertex.glsl";
-import coffeeSmokeFragmentShader from "../shaders/coffeeSmoke/fragment.glsl";
+import coffeeSmokeVertexShader from "/shaders/coffeeSmoke/vertex.glsl";
+import coffeeSmokeFragmentShader from "/shaders/coffeeSmoke/fragment.glsl";
 import { textureLoader } from "./loader";
 
 // Perlin texture
