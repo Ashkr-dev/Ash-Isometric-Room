@@ -3,9 +3,12 @@ import { gsap } from "gsap";
 /**
  * Base jump animation
  */
+let isAnimating = false;
+
 function skateboardJump(skateboardMesh) {
-  gsap
-    .timeline()
+  const jumpTl = gsap.timeline();
+
+  jumpTl
     .to(skateboardMesh.position, {
       y: 0.8,
       duration: 0.51,
@@ -17,15 +20,27 @@ function skateboardJump(skateboardMesh) {
       duration: 0.43,
       ease: "power2.In",
     });
+
+  return jumpTl;
 }
 
 /**
  * Ollie Trick
  */
+
 function ollieTrick(skateboardMesh) {
+  if (isAnimating) return;
+  isAnimating = true;
+
   skateboardJump(skateboardMesh);
-  gsap
-    .timeline()
+
+  const ollieTl = gsap.timeline({
+    onComplete: () => {
+      isAnimating = false;
+    },
+  });
+
+  ollieTl
     .to(skateboardMesh.rotation, {
       z: -0.2,
       duration: 0.26,
@@ -46,10 +61,20 @@ function ollieTrick(skateboardMesh) {
 /**
  * Kickflip Trick
  */
+
 function kickflipTrick(skateboardMesh) {
+  if (isAnimating) return;
+  isAnimating = true;
+
   skateboardJump(skateboardMesh);
-  gsap
-    .timeline()
+
+  const kickflipTl = gsap.timeline({
+    onComplete: () => {
+      isAnimating = false;
+    },
+  });
+
+  kickflipTl
     .to(skateboardMesh.rotation, {
       z: -0.2,
       duration: 0.26,
@@ -79,10 +104,20 @@ function kickflipTrick(skateboardMesh) {
 /**
  * Frontside 360 Trick
  */
+
 function frontside360(skateboardMesh) {
+  if (isAnimating) return;
+  isAnimating = true;
+
   skateboardJump(skateboardMesh);
-  gsap
-    .timeline()
+
+  const frontside360Tl = gsap.timeline({
+    onComplete: () => {
+      isAnimating = false;
+    },
+  });
+
+  frontside360Tl
     .to(skateboardMesh.rotation, {
       z: -0.2,
       duration: 0.26,
@@ -109,9 +144,4 @@ function frontside360(skateboardMesh) {
     });
 }
 
-export {
-  skateboardJump,
-  ollieTrick,
-  kickflipTrick,
-  frontside360,
-};
+export { skateboardJump, ollieTrick, kickflipTrick, frontside360 };
