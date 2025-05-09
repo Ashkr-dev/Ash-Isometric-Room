@@ -1,14 +1,20 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
 import coffeeSmokeMaterial from "./Components/coffeeSmoke";
-import {textureLoader, gltfLoader} from "./Components/loader";
-import {ollieTrick, kickflipTrick, frontside360} from "./Components/skateboardTricks";
-import {sizes} from "./Utils/sizes";
-import {renderer} from "./Utils/renderer";
-import {camera} from "./Utils/camera";
-import {controls} from "./Utils/controls";
-import {resize} from "./Utils/resize";
-import {gui} from "./Utils/gui";
+import { textureLoader, gltfLoader } from "./Components/loader";
+import {
+  ollieTrick,
+  kickflipTrick,
+  frontside360,
+} from "./Components/skateboardTricks";
+import { sizes } from "./Utils/sizes";
+import { renderer } from "./Utils/renderer";
+import { camera } from "./Utils/camera";
+import { controls } from "./Utils/controls";
+import { resize } from "./Utils/resize";
+import { gui } from "./Utils/gui";
+import { animatedChair } from "./Components/animatedChair";
+import { animatedTurntable } from "./Components/animatedTurntable";
 
 /**
  * Base
@@ -60,6 +66,8 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
   const coffeeSteamMesh = gltf.scene.children.find((child) => {
     return child.name === "coffee-steam";
   });
+
+  //skateboard
   skateboardMesh = gltf.scene.children.find((child) => {
     return child.name === "Skateboard";
   });
@@ -74,29 +82,31 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
     }
   });
 
+  //turntable
+  const turntableDisk = gltf.scene.children.find((child) => {
+    return child.name === "turntable-disk";
+  });
+  const tonearm = gltf.scene.children.find((child) => {
+    return child.name === "tonearm";
+  });
+  //animated turntable
+  animatedTurntable(turntableDisk, tonearm);
+
   /**
    * Animated chair
    */
-  gsap.to(chairMesh.rotation, {
-    y: `+= ${Math.PI * 0.5}`, // half rotation
-    duration: 10, // very slow (20 seconds per full rotation)
-    repeat: -1, // infinite loop
-    ease: "power1.inOut", // constant speed (no easing)
-    yoyo: true, // back and forth
-  });
+  animatedChair(chairMesh);
 
   if (coffeeSteamMesh) {
     coffeeSteamMesh.material = coffeeSmokeMaterial;
   }
-
   tvEmissionMesh.material = tvEmissionMaterial;
   studyLampBulbMesh.material = studylampBulbMaterial;
   laptopEmissionMesh.material = laptopEmissionMaterial;
-  
+
   gltf.scene.position.set(0, -1, 0);
   scene.add(gltf.scene);
 });
-
 
 gui.addColor(tvEmissionMaterial, "color").name("Tv-BackLight");
 gui.addColor(studylampBulbMaterial, "color").name("Study-Lamp-Bulb");
@@ -138,7 +148,6 @@ window.addEventListener("click", () => {
   }
 });
 
-
 //camera
 scene.add(camera);
 
@@ -154,7 +163,7 @@ const tick = () => {
   if (coffeeSmokeMaterial.uniforms?.uTime) {
     coffeeSmokeMaterial.uniforms.uTime.value = elapsedTime;
   }
-  
+
   //Cast a ray
   raycaster.setFromCamera(mouse, camera);
   const objectToTest = [skateboardTail, skateboardFront, skateboardMesh].filter(
