@@ -1,4 +1,18 @@
 import { gsap } from "gsap";
+import { Howl } from "howler";
+
+/**
+ * Skateboard tricks sfx
+ */
+const skateboardPop = new Howl({
+  src: ["sounds/skateboard/skateboard_pop.mp3"],
+  volume: 0.2,
+});
+
+const skateboardLand = new Howl({
+  src: ["sounds/skateboard/skateboard_land.mp3"],
+  volume: 0.06,
+});
 
 /**
  * Base jump animation
@@ -40,6 +54,8 @@ function ollieTrick(skateboardMesh) {
     },
   });
 
+  skateboardPop.play();
+
   ollieTl
     .to(skateboardMesh.rotation, {
       z: -0.2,
@@ -55,6 +71,9 @@ function ollieTrick(skateboardMesh) {
       z: 0,
       duration: 0.12,
       ease: "none",
+      onComplete: () => {
+        skateboardLand.play();
+      },
     });
 }
 
@@ -73,6 +92,8 @@ function kickflipTrick(skateboardMesh) {
       isAnimating = false;
     },
   });
+
+  skateboardPop.play();
 
   kickflipTl
     .to(skateboardMesh.rotation, {
@@ -98,6 +119,9 @@ function kickflipTrick(skateboardMesh) {
       z: 0,
       duration: 0.12,
       ease: "none",
+      onComplete: () => {
+        skateboardLand.play();
+      },
     });
 }
 
@@ -116,6 +140,8 @@ function frontside360(skateboardMesh) {
       isAnimating = false;
     },
   });
+
+  skateboardPop.play();
 
   frontside360Tl
     .to(skateboardMesh.rotation, {
@@ -141,6 +167,9 @@ function frontside360(skateboardMesh) {
       z: 0,
       duration: 0.14,
       ease: "none",
+      onComplete: () => {
+        skateboardLand.play();
+      },
     });
 }
 
