@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { gsap } from "gsap";
 import coffeeSmokeMaterial from "./Components/coffeeSmoke";
 import { textureLoader, gltfLoader } from "./Components/loader";
 import {
@@ -15,6 +14,7 @@ import { resize } from "./Utils/resize";
 import { gui } from "./Utils/gui";
 import { animatedChair } from "./Components/animatedChair";
 import { animatedTurntable } from "./Components/animatedTurntable";
+
 
 /**
  * Base
@@ -42,7 +42,13 @@ const laptopEmissionMaterial = new THREE.MeshBasicMaterial({
 /**
  * Model
  */
-let skateboardMesh, skateboardTail, skateboardFront;
+let skateboardMesh,
+  skateboardTail,
+  skateboardFront,
+  turntableDisk,
+  tonearm,
+  bgMusic,
+  tonearmTimeline;
 
 gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
   gltf.scene.traverse((child) => {
@@ -83,14 +89,34 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
   });
 
   //turntable
-  const turntableDisk = gltf.scene.children.find((child) => {
-    return child.name === "turntable-disk";
+  const turntable = gltf.scene.children.find((child) => {
+    return child.name === "turntable";
   });
-  const tonearm = gltf.scene.children.find((child) => {
-    return child.name === "tonearm";
-  });
-  //animated turntable
-  animatedTurntable(turntableDisk, tonearm);
+
+  //  turntableDisk = gltf.scene.children.find((child) => {
+  //     return child.name === "turntable-disk";
+  //   });
+  turntableDisk = gltf.scene.getObjectByName("turntable-disk");
+  tonearm = gltf.scene.getObjectByName("tonearm");
+
+  // tonearm = gltf.scene.children.find((child) => {
+  //   return child.name === "tonearm";
+  // });
+
+  // Get animation timeline and music
+  const result = animatedTurntable(turntableDisk, tonearm);
+  tonearmTimeline = result.tonearmTimeline;
+  bgMusic = result.bgMusic;
+
+  // Add a toggle function to userData
+  turntableDisk.userData.toggleMusic = () => {
+    if (bgMusic.playing()) {
+      bgMusic.pause();
+      tonearmTimeline.reverse();
+    } else {
+      tonearmTimeline.play();
+    }
+  };
 
   /**
    * Animated chair
@@ -134,7 +160,6 @@ let currentIntersect = null;
 
 window.addEventListener("click", () => {
   if (!currentIntersect) return;
-
   switch (currentIntersect) {
     case skateboardTail:
       ollieTrick(skateboardMesh);
@@ -143,6 +168,25 @@ window.addEventListener("click", () => {
       kickflipTrick(skateboardMesh);
       break;
     case skateboardFront:
+      frontside360(skateboardMesh);
+      break;
+    default:
+      if (currentIntersect.userData.toggleMusic) {
+        currentIntersect.userData.toggleMusic(); // ✅ Trigger music toggle
+      }
+      break;
+  }
+});
+
+window.addEventListener("keydown", (e) => {
+  switch (e.key.toLowerCase()) {
+    case "o":
+      ollieTrick(skateboardMesh);
+      break;
+    case "k":
+      kickflipTrick(skateboardMesh);
+      break;
+    case "f":
       frontside360(skateboardMesh);
       break;
   }
@@ -157,19 +201,25 @@ scene.add(camera);
 const clock = new THREE.Clock();
 
 const tick = () => {
+
   const elapsedTime = clock.getElapsedTime();
 
   //Update coffeeSmokeMaterial
-  if (coffeeSmokeMaterial.uniforms?.uTime) {
+  if (coffeeSmokeMaterial?.uniforms?.uTime) {
     coffeeSmokeMaterial.uniforms.uTime.value = elapsedTime;
   }
 
   //Cast a ray
   raycaster.setFromCamera(mouse, camera);
-  const objectToTest = [skateboardTail, skateboardFront, skateboardMesh].filter(
-    Boolean
-  );
+  const objectToTest = [
+    skateboardTail,
+    skateboardFront,
+    skateboardMesh,
+    turntableDisk,
+  ].filter(Boolean);
   const intersects = raycaster.intersectObjects(objectToTest);
+
+  document.body.style.cursor = intersects.length > 0 ? "pointer" : "default";
 
   if (intersects.length > 0) {
     currentIntersect = intersects[0].object;
@@ -185,6 +235,7 @@ const tick = () => {
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
+
 };
 
 tick();
