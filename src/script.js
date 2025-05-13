@@ -15,7 +15,6 @@ import { gui } from "./Utils/gui";
 import { animatedChair } from "./Components/animatedChair";
 import { animatedTurntable } from "./Components/animatedTurntable";
 
-
 /**
  * Base
  */
@@ -93,15 +92,8 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
     return child.name === "turntable";
   });
 
-  //  turntableDisk = gltf.scene.children.find((child) => {
-  //     return child.name === "turntable-disk";
-  //   });
   turntableDisk = gltf.scene.getObjectByName("turntable-disk");
   tonearm = gltf.scene.getObjectByName("tonearm");
-
-  // tonearm = gltf.scene.children.find((child) => {
-  //   return child.name === "tonearm";
-  // });
 
   // Get animation timeline and music
   const result = animatedTurntable(turntableDisk, tonearm);
@@ -201,7 +193,6 @@ scene.add(camera);
 const clock = new THREE.Clock();
 
 const tick = () => {
-
   const elapsedTime = clock.getElapsedTime();
 
   //Update coffeeSmokeMaterial
@@ -235,7 +226,6 @@ const tick = () => {
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
-
 };
 
 tick();
