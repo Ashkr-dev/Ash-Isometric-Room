@@ -14,6 +14,11 @@ import { resize } from "./Utils/resize";
 import { gui } from "./Utils/gui";
 import { animatedChair } from "./Components/animatedChair";
 import { animatedTurntable } from "./Components/animatedTurntable";
+import {
+  tvEmissionMaterial,
+  studylampBulbMaterial,
+  laptopEmissionMaterial,
+} from "./Utils/material";
 
 /**
  * Base
@@ -32,11 +37,6 @@ bakedTexture.colorSpace = THREE.SRGBColorSpace;
  * Materials
  */
 const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture });
-const tvEmissionMaterial = new THREE.MeshBasicMaterial({ color: "#6ccaf0" });
-const studylampBulbMaterial = new THREE.MeshBasicMaterial({ color: "#ebd0b7" });
-const laptopEmissionMaterial = new THREE.MeshBasicMaterial({
-  color: "#9a5fe3",
-});
 
 /**
  * Model
@@ -125,10 +125,6 @@ gltfLoader.load("Isometric-Room-Project.glb", (gltf) => {
   gltf.scene.position.set(0, -1, 0);
   scene.add(gltf.scene);
 });
-
-gui.addColor(tvEmissionMaterial, "color").name("Tv-BackLight");
-gui.addColor(studylampBulbMaterial, "color").name("Study-Lamp-Bulb");
-gui.addColor(laptopEmissionMaterial, "color").name("Laptop-keyboardLight");
 
 /**
  * Raycaster
