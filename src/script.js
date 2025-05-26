@@ -11,7 +11,6 @@ import { renderer } from "./Utils/renderer";
 import { camera } from "./Utils/camera";
 import { controls } from "./Utils/controls";
 import { resize } from "./Utils/resize";
-import { gui } from "./Utils/gui";
 import { animatedChair } from "./Components/animatedChair";
 import { animatedTurntable } from "./Components/animatedTurntable";
 import {
@@ -179,6 +178,9 @@ window.addEventListener("keydown", (e) => {
       break;
   }
 });
+
+
+
 
 //camera
 scene.add(camera);
